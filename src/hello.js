@@ -1,3 +1,3 @@
-function sayHello() {
-  return "Hello, world!";
-}
+module.exports = function sayHello() {
+  return 'Hello, world!';
+};
