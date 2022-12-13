@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var Scope = require("../src/scope");
 
 describe("Scope", function () {
@@ -101,5 +102,33 @@ describe("digest", function () {
     expect(function () {
       scope.$digest();
     }).toThrow();
+  });
+
+  it("ends the digest when the last watch is clean", function () {
+    scope.array = _.range(100);
+    var watchExecutions = 0;
+
+    _.times(100, function (i) {
+      scope.$watch(
+        function (scope) {
+          watchExecutions++;
+          return scope.array[i];
+        },
+        function (newValue, oldValue, scope) {
+
+        }
+      );
+    });
+
+    scope.$digest();
+    expect(watchExecutions).toBe(200);
+
+    scope.array[0] = 420;
+    scope.$digest();
+    expect(watchExecutions).toBe(301);
+  });
+
+  it("does not end digest so that new watcher are not run", function () {
+
   });
 });
